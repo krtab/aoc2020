@@ -2,8 +2,11 @@ use std::cmp::{Ord,Ordering};
 use std::fs;
 use std::str::{self,FromStr};
 use anyhow;
+use std::io::{stdout,BufWriter,Write};
 
 fn main() -> anyhow::Result<()> {
+    let stdout = stdout();
+    let mut handle = BufWriter::new(stdout.lock());
     let buf = fs::read("input.txt")?;
     let s = str::from_utf8(&buf)?;
     let input : Result<Vec<i64>,<i64 as FromStr>::Err> = s.lines().map(|x| (x.parse())).collect();
@@ -19,7 +22,7 @@ fn main() -> anyhow::Result<()> {
             Less => left = iter.next(),
             Greater => right = iter.next_back(),
             Equal => {
-                println!("Result: {}x{} = {}", l, r, l*r);
+                writeln!(handle,"Result: {}x{} = {}", l, r, l*r);
                 break
             }
         }
@@ -28,7 +31,7 @@ fn main() -> anyhow::Result<()> {
         for i2 in &input {
             for i3 in &input {
                 if i1 + i2 + i3 == 2020 {
-                    println!("Result: {} x {} x {} = {}", i1, i2, i3, i1*i2*i3);
+                    writeln!(handle,"Result: {} x {} x {} = {}", i1, i2, i3, i1*i2*i3);
                 }
             }
         }
