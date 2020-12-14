@@ -22,7 +22,7 @@ fn main() -> anyhow::Result<()> {
             Less => left = iter.next(),
             Greater => right = iter.next_back(),
             Equal => {
-                writeln!(handle,"Result: {}x{} = {}", l, r, l*r);
+                writeln!(handle,"Result: {}x{} = {}", l, r, l*r)?;
                 break
             }
         }
@@ -31,7 +31,7 @@ fn main() -> anyhow::Result<()> {
         for i2 in &input {
             for i3 in &input {
                 if i1 + i2 + i3 == 2020 {
-                    writeln!(handle,"Result: {} x {} x {} = {}", i1, i2, i3, i1*i2*i3);
+                    writeln!(handle,"Result: {} x {} x {} = {}", i1, i2, i3, i1*i2*i3)?;
                 }
             }
         }

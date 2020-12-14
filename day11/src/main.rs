@@ -1,11 +1,10 @@
-use std::fmt::Display;
-
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum Seat {
     Free,
     Occupied,
 }
 
+#[allow(dead_code)]
 fn print_layout(layout: &Vec<Vec<Option<Seat>>>) -> String {
     let mut res = String::new();
     for r in layout {
