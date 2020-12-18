@@ -19,3 +19,6 @@ members = [
     "day16",
     "day17",
 ]
+
+# [profile.release]
+# debug = true
