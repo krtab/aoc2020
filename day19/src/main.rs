@@ -11,9 +11,9 @@ use vec_map::VecMap as Map;
 
 type T = u64;
 
-fn build_regex(rules: &Map<Rule>, id: usize, cache: &mut Map<String>) -> String {
+fn build_regex(rules: &Map<Rule>, id: usize, cache: &mut Map<String>, output : &mut String) {
     if let Some(s) = cache.get(id) {
-        s.clone()
+        output.push_str(&s);
     } else {
         let v = match rules.get(id).unwrap() {
             Rule::Litteral(c) => {
@@ -30,7 +30,7 @@ fn build_regex(rules: &Map<Rule>, id: usize, cache: &mut Map<String>) -> String 
                         res.push('|');
                     };
                     for term in cl {
-                        res.push_str(&build_regex(rules, *term as usize, cache));
+                        &build_regex(rules, *term as usize, cache,&mut res);
                     }
                     first = false;
                 }
@@ -38,8 +38,8 @@ fn build_regex(rules: &Map<Rule>, id: usize, cache: &mut Map<String>) -> String 
                 res
             }
         };
-        cache.insert(id, v.clone());
-        v
+        output.push_str(&v);
+        cache.insert(id, v);
     }
 }
 
@@ -77,9 +77,11 @@ fn main() -> anyhow::Result<()> {
         messages.push(l);
     }
     let mut cache = Map::new();
-    let str42 = build_regex(&rules, 42, &mut cache);
+    let mut str42 = String::new();
+    build_regex(&rules, 42, &mut cache, &mut str42);
     let re42 = Regex::new(&str42)?;
-    let str31 = build_regex(&rules, 31, &mut cache);
+    let mut str31 = String::new();
+    build_regex(&rules, 31, &mut cache, &mut str31);
     let re31 = Regex::new(&str31)?;
     let re_total = Regex::new(&format!(r"^(?P<g42>(?:{})+)(?P<g31>(?:{})+?)$",&str42,&str31))?;
     let a1 = messages.iter().filter(|&&msg| {
