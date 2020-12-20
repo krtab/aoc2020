@@ -9,7 +9,6 @@ use combine::{
 use regex::Regex;
 use vec_map::VecMap as Map;
 
-
 type T = u64;
 
 fn build_regex(rules: &Map<Rule>, id: usize, cache: &mut Map<String>) -> String {
@@ -24,7 +23,7 @@ fn build_regex(rules: &Map<Rule>, id: usize, cache: &mut Map<String>) -> String 
             }
             Rule::Disjunction(clauses) => {
                 let mut res = String::new();
-                res.push('(');
+                res.push_str(&"(?:");
                 let mut first = true;
                 for cl in clauses {
                     if !first {
@@ -78,15 +77,21 @@ fn main() -> anyhow::Result<()> {
         messages.push(l);
     }
     let mut cache = Map::new();
-    let mut re = String::new();
-    re.push('^');
-    re.push_str(&build_regex(&rules, 0, &mut cache));
-    re.push('$');
-    let re = Regex::new(&re)?;
-    // for (i,msg) in messages.iter().enumerate() {
-    //     println!("{}: {}",i, re.is_match(msg));
-    // }
-    let a1 = messages.iter().filter(|&msg| re.is_match(msg)).count();
+    let str42 = build_regex(&rules, 42, &mut cache);
+    let re42 = Regex::new(&str42)?;
+    let str31 = build_regex(&rules, 31, &mut cache);
+    let re31 = Regex::new(&str31)?;
+    let re_total = Regex::new(&format!(r"^(?P<g42>(?:{})+)(?P<g31>(?:{})+?)$",&str42,&str31))?;
+    let a1 = messages.iter().filter(|&&msg| {
+        match re_total.captures(msg) {
+            None => false,
+            Some(cap) => {
+                let count42 = re42.find_iter(cap.name("g42").unwrap().as_str()).count();
+                let count31 = re31.find_iter(cap.name("g31").unwrap().as_str()).count();
+                count42 > count31
+            }
+        }
+    }).count();
     println!("Answer1: {}", a1);
     Ok(())
 }
