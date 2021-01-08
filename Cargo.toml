@@ -23,7 +23,8 @@ members = [
     "day20",
     "day21",
     "day22",
+    "day23",
 ]
 
-# [profile.release]
-# debug = true
+[profile.release]
+debug = true
