@@ -44,11 +44,10 @@ fn main() -> anyhow::Result<()> {
         // [3, 8, 9, 1, 2, 5, 4, 6, 7]
         // input
         [2, 1, 9, 3, 4, 7, 8, 6, 5]
-        })
-        .iter()
-        .copied()
-        .chain(10..=1_000_000)
-        ;
+    })
+    .iter()
+    .copied()
+    .chain(10..=1_000_000);
     for (x, next) in iter.clone().zip(iter.skip(1)) {
         succ[x] = next;
     }
